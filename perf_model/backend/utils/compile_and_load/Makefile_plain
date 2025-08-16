@@ -1,0 +1,73 @@
+# executable name
+TARGET := program
+
+BUILD_DIR := ./
+SRC_DIR := ./
+INCL_DIR := ./
+
+ELF := $(TARGET).elf
+
+# ------------------
+CC := clang
+CXX := clang++
+
+CFLAGS := --target=riscv32-unkown-linux-gnu -march=rv32i -I $(INCL_DIR) -fno-pie -fno-pic -Wno-incompatible-pointer-types-discards-qualifiers
+
+LD := ld.lld
+LDSCRIPT := linker_rv32.ld
+LDFLAGS := -T $(LDSCRIPT) -o $(ELF)
+
+# ------------------
+
+SRC := $(wildcard *.c) $(wildcard *.cpp)
+
+SRC_C := $(filter %.c, $(SRC))
+SRC_CPP := $(filter %.cpp, $(SRC))
+
+ASMS := $(patsubst %.c, %.s, $(SRC_C)) $(patsubst %.cpp, %.s, $(SRC_CPP))
+OBJS := $(patsubst %.s, %.o, $(ASMS))
+
+OBJS_C := $(patsubst %.c, %.o, $(SRC_C))
+OBJS_CPP := $(patsubst %.cpp, %.o, $(SRC_CPP))
+
+ASMS_C := $(patsubst %.c, %.s, $(SRC_C))
+ASMS_CPP := $(patsubst %.cpp, %.s, $(SRC_CPP))
+
+# -----------------
+
+.PHONY: all clean debug clean-intermediate asm obj
+
+all: $(ELF)
+
+$(ELF): $(OBJS_C) $(OBJS_CPP) $(LDSCRIPT)
+	$(LD) $(LDFLAGS) $(OBJS)
+
+$(OBJS_C): %.o: %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJS_CPP): %.o: %.cpp
+	$(CXX) $(CFLAGS) -c -o $@ $<
+
+$(ASMS_C): %.s: %.c
+	$(CC) $(CFLAGS) -S -o $@ $<
+
+$(ASMS_CPP): %.s: %.cpp
+	$(CXX) $(CFLAGS) -S -o $@ $<
+
+$(LDSCRIPT):
+	@echo "please provide a valid linkerscript named $(LDSCRIPT)"
+
+obj: $(OBJS_C) $(OBJS_CPP)
+
+asm: $(ASMS_C) $(ASMS_CPP)
+
+clean:
+	rm -rf $(OBJS) $(ASMS) $(ELF)
+
+clean-intermediate:
+	rm -rf $(ASMS) $(OBJS)
+
+debug:
+	@echo "src: $(SRCS)"
+	@echo "asm: $(ASMS)"
+	@echo "obj: $(OBJS)"

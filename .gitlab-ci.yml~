@@ -1,0 +1,42 @@
+stages:
+  - test
+
+default:
+  interruptible: false
+  image: python:3.10
+  tags: [docker]
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/topics/caching/
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - .venv/
+
+.python-job:
+  before_script:
+    - python --version # check that Python version is correct
+    - pip install virtualenv
+    - virtualenv .venv
+    - source .venv/bin/activate
+    - pip install -r requirements-dev.txt
+    - pip install -e .
+
+test:
+  stage: test
+  extends: .python-job
+  script:
+    - pip install pytest
+    - pytest --junitxml=test-report.xml .
+  artifacts:
+    when: always
+    reports:
+      junit: test-report.xml
