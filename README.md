@@ -18,3 +18,5 @@ Backend contains stripped stuff from comp arch project
 explain all folders
 
 warn about compilation offsets and config offsets ==
+
+perparation for xpack gcc and pasting path in make file
