@@ -132,6 +132,8 @@ class RV32IMCachedProcessor:
                 if oldest < self.cache[set][way][1]:
                     oldest = self.cache[set][way][1]
                     oldest_pos = way
+
+                # lru with limited counter
                 # if self.cache[set][way][1] >= self.ways:
                 #     self.cache[set][way][0] = address
                 #     self.cache[set][way][1] = 0
@@ -147,33 +149,20 @@ class RV32IMCachedProcessor:
             if self.instruction[0] == "ecall":
                 self.ccs -= 1  # magic correction...
                 if self.cached:
-                    print(self.ccs)
 
-                    mar: int = (self.reads + self.writes) / self.ccs
-                    rhr: int = self.read_hits / self.reads
-                    whr: int = self.write_hits / self.writes
-                    wrate: int = self.writes / self.ccs
-                    rrate: int = self.reads / self.ccs
-                    wrtrd: int = self.writes / self.reads
-                    print("mar", mar)
-                    print("rhr", rhr)
-                    print("whr", whr)
-                    print("rd rate:", rrate)
-                    print("wr rate:", wrate)
-                    print("rd/wr :", wrtrd)
+                    self.read_stalls -= self.reads * (self.read_delay)
+                    self.write_stalls -= self.writes * (self.write_delay)
 
-                    self.read_stalls -= self.read_hits * (self.read_delay - 1)
-                    self.write_stalls -= self.write_hits * (self.write_delay - 1)
+                    self.read_stalls += self.read_hits
+                    self.write_stalls += self.write_hits
 
                     self.read_stalls += (self.reads - self.read_hits) * (
-                        self.write_delay
+                        self.write_delay + self.read_delay - 1
                     )
                     self.write_stalls += (self.writes - self.write_hits) * (
-                        self.write_delay
+                        2 * self.write_delay + 1
                     )
 
-                self.read_stalls *= self.cerrc
-                self.write_stalls *= self.cerrc
                 self.stalls += self.read_stalls + self.write_stalls
                 self.ccs += int(self.stalls)
                 return
