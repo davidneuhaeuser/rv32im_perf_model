@@ -150,6 +150,20 @@ class RV32IMCachedProcessor:
                 self.ccs -= 1  # magic correction...
                 if self.cached:
 
+                    # params: list[int] = [
+                    #     self.ccs,
+                    #     self.reads, self.read_hits, (self.reads - self.read_hits),
+                    #     self.writes, self.write_hits, (self.writes - self.write_hits),
+                    # ]
+                    # p_names: list[str] = ["ccs", "reads", "rhits", "rmisses", "writes", "whits", "wmisses"]
+                    # for i in range(len(params)):
+                    #     for j in range(len(params)):
+                    #         if p_names[i] != p_names[j]:
+                    #             print(p_names[i], "/", p_names[j], "\t", params[i] / params[j])
+
+                    # self.read_hits *= 1 - (1-(self.read_hits / self.reads))**4
+                    # self.write_hits *= 1 - (1-(self.write_hits / self.writes))**4
+
                     self.read_stalls -= self.reads * (self.read_delay)
                     self.write_stalls -= self.writes * (self.write_delay)
 
