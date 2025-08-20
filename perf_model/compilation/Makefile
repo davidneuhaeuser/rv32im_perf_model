@@ -1,11 +1,10 @@
-CC=riscv-none-elf-gcc
-AR=riscv-none-elf-ar
+CC=/home/daneu/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin/riscv-none-elf-gcc
+AR=/home/daneu/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin/riscv-none-elf-ar
 
 BUILD_DIR=build
 SRC_DIR=src
 INC_DIR=include
 
-# CFLAGS=-O2 -march=rv32im -mabi=ilp32 --static -nostdlib -I include -fno-inline
 CFLAGS=-O2 -march=rv32im -mabi=ilp32 --static -nostdlib -I include -fno-inline
 LDFLAGS=-T linker_rv32.ld -lgcc -L$(BUILD_DIR)
 
