@@ -15,14 +15,14 @@ It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for 
 
 This setup will cover the following steps:
 
-1.  **Download [GCC for RISC-V](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3)**
+1.  **Download GCC for RISC-V**
 2.  **Install pypy**
 3.  **Set variables**
 4.  **Initialise python project**
 
 
 ### Step 1
-Download GCC for RISC-V from the link for you system.
+Download [GCC for RISC-V](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3) from the link for you system.
 
 
 ### Step 2
