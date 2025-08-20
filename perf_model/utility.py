@@ -1,4 +1,4 @@
-from os import system, walk
+import os
 
 
 def print_program(program: list):
@@ -14,8 +14,21 @@ def instr_str(instruction: list[str]) -> str:
 
 
 def generate_asm(instructions: list, name: str) -> list[str]:
-    system("mkdir -p asm")
-    f = open("asm/" + name + ".asm", "w")
+    os.system("mkdir -p asm")
+
+    path: str = "asm/" + name + ".asm"
+
+    if os.path.isfile(path):
+        path = "asm/" + name + "-1" + ".asm"
+
+    for i in range(2, 100):
+        if os.path.isfile(path):
+            path = "asm/" + name + "-" + str(i) + ".asm"
+        else:
+            break
+
+    f = open(path, "w")
+
     for i in instructions:
         f.write(str(i) + "\n")
     f.close()
@@ -126,7 +139,7 @@ def print_exec_hist(history: list[list[str]]):
 def get_executables(dir: str) -> list[str]:
     executables: list[str] = []
 
-    for (_, dirnames, filenames) in walk(dir):
+    for (_, dirnames, filenames) in os.walk(dir):
         for f in filenames:
             executables.append(dir + "/" + f)
 
