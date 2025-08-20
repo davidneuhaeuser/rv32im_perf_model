@@ -1,4 +1,4 @@
-from os import walk
+from os import system, walk
 
 
 def print_program(program: list):
@@ -14,7 +14,8 @@ def instr_str(instruction: list[str]) -> str:
 
 
 def generate_asm(instructions: list, name: str) -> list[str]:
-    f = open("perf_model/asm_files/" + name + ".asm", "w")
+    system("mkdir -p asm")
+    f = open("asm/" + name + ".asm", "w")
     for i in instructions:
         f.write(str(i) + "\n")
     f.close()
