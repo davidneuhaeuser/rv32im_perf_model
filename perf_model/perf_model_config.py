@@ -18,6 +18,11 @@ WRITE_DELAY = 14  # default: 14
 # (duration of divisions depends on operands)
 MULT_DELAY = 4  # default: 4
 
+# Change this value only for experimental
+# purposes, since it is tied to the processors
+# architecture
+JUMP_DELAY = 3
+
 ################# CACHE CONFIG ##################
 # Configuration of a set associative cache
 # using least recently used (CACHED = False
