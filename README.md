@@ -50,14 +50,14 @@ alias clean="cd perf_model/compilation && make clean && cd ../.."
 ### Step 4
 Initialise the python project (installs package dependencies) depending on the python interpreter you are using.
 
-For *pypy* use the following commands as explained [here](https://doc.pypy.org/en/latest/install.html#installing-more-modules):
+For *pypy* use the following commands (explained [here](https://doc.pypy.org/en/latest/install.html#installing-more-modules)):
 
 ```
  ./pypy-xxx/bin/pypy -m ensurepip
 
  ./pypy-xxx/bin/pypy -mpip install -U pip wheel # to upgrade to the latest versions
 
- ./pypy-xxx/bin/pypy -mpip install -e ".[dev]"  # TODO
+ ./pypy-xxx/bin/pypy -mpip install -e ".[dev]" # install dependencies
 ```
 
 ## Usage
