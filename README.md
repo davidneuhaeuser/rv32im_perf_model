@@ -11,7 +11,7 @@ If you indent to analyze any other type of program, it is recommended to change 
 
 
 ## Setup
-It is recommended to use [pypy](https://doc.pypy.org/en/latest/install.html), for better simulation times. The link guides you through all necessary steps to download pypy and install necessary modules.
+It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for better simulation times. The link guides you through all necessary steps to download pypy and install necessary modules.
 
 This setup will cover the following steps:
 
@@ -26,36 +26,58 @@ Download GCC for RISC-V from the link for you system.
 
 
 ### Step 2
-Install pypy by downloading a pre-compiled version as explained [here](https://doc.pypy.org/en/latest/install.html).
-
+Install *pypy* by downloading a [pre-built](https://pypy.org/download.html) version as explained [here](https://doc.pypy.org/en/latest/install.html#download-a-pre-built-pypy).
+It is recommended to rename the extracted folder to something along the lines of `pypy_perf_model`.
 
 ### Step 3
-Add all necessary variables (these will only persist thoughout one session):
+Add all necessary variables (these will only persist throughout a single session):
 ```
 alias run="<path/to/pypy> perf_model/run.py"
 export xpack="<path/to/xpack/bin/>"
+alias mk="cd perf_model/compilation && make && cd ../.."
+alias clean="cd perf_model/compilation && make clean && cd ../.."
 ```
 
 For example:
 ```
-alias run="~/Downloads/pypy3.11/bin/python perf_model/run.py"
+alias run="~/Downloads/pypy_perf_model/bin/python perf_model/run.py"
 export xpack="~/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin"
+alias mk="cd perf_model/compilation && make && cd ../.."
+alias clean="cd perf_model/compilation && make clean && cd ../.."
 ```
 
 
 ### Step 4
-Initialise the python project (installs package dependencies).
+Initialise the python project (installs package dependencies) depending on the python interpreter you are using.
+
+For *pypy* use the following commands as explained [here](https://doc.pypy.org/en/latest/install.html#installing-more-modules):
+
+```
+ ./pypy-xxx/bin/pypy -m ensurepip
+
+ ./pypy-xxx/bin/pypy -mpip install -U pip wheel # to upgrade to the latest versions
+
+ ./pypy-xxx/bin/pypy -mpip install -e ".[dev]"  # for example
+```
 
 ## Usage
 **Configure the simulation to your liking via `perf_model/perf_model_config.py`**
 
 **Compile the desired c project**
 
-1. by pasting your project according to the given structure in `perf_model/compilation`
-2. running `make`
+1. Paste your project according to the given structure into `perf_model/compilation`
+2. Add each executables path to `OUT` and adding a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
+```
+$(BUILD_DIR)/EXENAME: $(SRC_DIR)/FILE.c $(LIB)
+	$(CC) $(CFLAGS) -I$(INC_DIR) $(DEFS) $(SRC_DIR)/FILE.c $(LDFLAGS) -o $@
+```
+3. Run `mk`.
+
+4. **(Optional)** If you are done, clean up your build by using `clean`.
 
 **Run the simulation**
-1. Use `run` with flags (see `-h` for help) and a path to either a file or a folder to execute all the executables contained within that folder.
+
+Use `run` with flags (see `-h` for help) and a path to either a file or a folder to execute all the executables contained within that folder.
 
 > [!NOTE]
 > Please note that you can execute all commands from the top level of this repository
