@@ -4,14 +4,14 @@ This tool can be used to compile C programs and estimate their performance when 
 
 This performance Model is currently optimized for performance analysis regarding DNNs.
 
-If you indent to analyze any other type of program, it is recommended to change the order of the switch statement for `execute()` in `perf_model/perf_model_rv32im.py`. For this, the execution histogramm functionality (`-I`) can be very helpful.
+If you intend to analyze any other type of program, it is recommended to change the order of the switch statement for `execute()` in `perf_model/perf_model_rv32im.py`. For this, the execution histogramm functionality (`-I`) can be very helpful.
 
 > [!NOTE]
 > This tool is designed for use on Linux.
 
 
 ## Setup
-It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for better simulation times. The link guides you through all necessary steps to download pypy and install necessary modules.
+It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for better simulation times.
 
 This setup will cover the following steps:
 
@@ -30,7 +30,7 @@ Install *pypy* by downloading a [pre-built](https://pypy.org/download.html) vers
 It is recommended to rename the extracted folder to something along the lines of `pypy_perf_model`.
 
 ### Step 3
-Add all necessary variables (these will only persist throughout a single session):
+Add all necessary variables by replacing the placeholders below with the according paths (these will only persist throughout a single session):
 ```
 alias run="<path/to/pypy> perf_model/run.py"
 export xpack="<path/to/xpack/bin/>"
@@ -57,13 +57,13 @@ For *pypy* use the following commands as explained [here](https://doc.pypy.org/e
 
  ./pypy-xxx/bin/pypy -mpip install -U pip wheel # to upgrade to the latest versions
 
- ./pypy-xxx/bin/pypy -mpip install -e ".[dev]"  # for example
+ ./pypy-xxx/bin/pypy -mpip install -e ".[dev]"  # TODO
 ```
 
 ## Usage
-**Configure the simulation to your liking via `perf_model/perf_model_config.py`**
+**1. Configure the simulation to your liking via `perf_model/perf_model_config.py`**
 
-**Compile the desired c project**
+**2. Compile the desired c project**
 
 1. Paste your project according to the given structure into `perf_model/compilation`
 2. Add each executables path to `OUT` and adding a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
@@ -75,7 +75,7 @@ $(BUILD_DIR)/EXENAME: $(SRC_DIR)/FILE.c $(LIB)
 
 4. **(Optional)** If you are done, clean up your build by using `clean`.
 
-**Run the simulation**
+**3. Run the simulation**
 
 Use `run` with flags (see `-h` for help) and a path to either a file or a folder to execute all the executables contained within that folder.
 
