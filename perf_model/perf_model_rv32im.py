@@ -8,6 +8,19 @@ from perf_model.instructions import (
     rv32i_S_instructions,
     rv32im_R_instructions,
 )
+from perf_model.perf_model_config import (
+    BLOCK_SIZE,
+    CACHE_ERROR_CORRECTION,
+    CACHED,
+    DMEM_OFFSET,
+    JUMP_DELAY,
+    MEM_SIZE,
+    MULT_DELAY,
+    READ_DELAY,
+    SETS,
+    WAYS,
+    WRITE_DELAY,
+)
 from perf_model.utility import btd_conversion
 
 RD = 1
@@ -20,50 +33,26 @@ IMM = 3
 
 
 class RV32IMCachedProcessor:
-    def __init__(
-        self,
-        program: list[list[str]] = [[""]],
-        mem_size: int = 4096,
-        mem_init: list[int] = [0],
-        read_delay: int = 9,
-        write_delay: int = 14,
-        mult_delay: int = 4,
-        ways: int = 4,
-        sets: int = 4,
-        blsz: int = 2,
-        dmem_offset: int = 0x10000,
-        cache_error_correction: float = 1.05,
-        cached: bool = True,
-    ):
+    def __init__(self, program: list[list[str]] = [[""]], mem_init: list[int] = [0]):
         # TODO order these
 
-        self.cerrc: bool = cache_error_correction
-        self.cached: bool = cached
-
         self.program: int = program
-        self.read_delay: int = read_delay
-        self.write_delay: int = write_delay
-        self.mult_delay: int = mult_delay
         self.ccs: int = 4
-        self.jump_delay: int = 3
         self.reads: int = 0
         self.writes: int = 0
         self.stalls: int = 0
         self.exec_history: list[str] = []
 
-        self.ways: int = ways
-        self.blsz: int = blsz
-        self.sets: int = sets
         self.read_hits: int = 0
         self.write_hits: int = 0
         self.read_stalls: int = 0
         self.write_stalls: int = 0
 
         self.cache: list[list[int]] = [
-            [[-1, ways - i] for i in range(ways)] for j in range(sets)
+            [[-1, WAYS - i] for i in range(WAYS)] for j in range(SETS)
         ]
 
-        self.dmem_offset: int = dmem_offset // 4
+        self.dmem_offset: int = DMEM_OFFSET // 4
         self.registers: list[int] = [0] * 32
         self.read_data: int = 0
         self.pc: int = 0
@@ -83,7 +72,7 @@ class RV32IMCachedProcessor:
         self.rd: int = 0
         self.jump: bool = False
 
-        self.mem: list[int] = [0] * (math.ceil(mem_size / 4))
+        self.mem: list[int] = [0] * (math.ceil(MEM_SIZE / 4))
 
         for i in range(math.ceil(len(mem_init) / 4)):
             byte0: int = mem_init[4 * i]
@@ -108,13 +97,13 @@ class RV32IMCachedProcessor:
 
     def cache_access(self, addr: int, wr_strobe: bool):
 
-        address: int = addr // self.blsz
+        address: int = addr // BLOCK_SIZE
         hit: bool = False
-        set: int = address % self.sets
+        set: int = address % SETS
         oldest: int = 0
         oldest_pos: int = 0
 
-        for way in range(self.ways):
+        for way in range(WAYS):
 
             self.cache[set][way][1] = self.cache[set][way][1] + 1
 
@@ -128,7 +117,7 @@ class RV32IMCachedProcessor:
             else:
                 self.read_hits += 1
         else:
-            for way in range(self.ways):
+            for way in range(WAYS):
                 if oldest < self.cache[set][way][1]:
                     oldest = self.cache[set][way][1]
                     oldest_pos = way
@@ -143,41 +132,39 @@ class RV32IMCachedProcessor:
 
             if self.instruction[0] == "ecall":
                 self.ccs -= 1  # magic correction...
-                if self.cached:
+                if CACHED:
 
-                    self.read_stalls -= self.reads * (self.read_delay)
-                    self.write_stalls -= self.writes * (self.write_delay)
+                    self.read_stalls -= self.reads * (READ_DELAY)
+                    self.write_stalls -= self.writes * (WRITE_DELAY)
 
                     self.read_stalls += self.read_hits
                     self.write_stalls += self.write_hits
 
                     self.read_stalls += (self.reads - self.read_hits) * (
-                        self.write_delay + self.read_delay - 1
+                        WRITE_DELAY + READ_DELAY - 1
                     )
                     self.write_stalls += (self.writes - self.write_hits) * (
-                        2 * self.write_delay + 1
+                        2 * WRITE_DELAY + 1
                     )
 
                 self.stalls += self.read_stalls + self.write_stalls
-                self.ccs = int(self.cerrc * (self.ccs + self.stalls))
+                self.ccs = int(CACHE_ERROR_CORRECTION * (self.ccs + self.stalls))
                 return
             else:
                 self.tick()
                 self.ccs += 1
 
-                # TODO replace constants from config directly instead of as calss variables
-
     def print_cache(self):
         entries: str = ""
         header: str = ""
 
-        for way in range(self.ways):
+        for way in range(WAYS):
             header += f"way {way}"
 
-        print("\taddress\tlru" * self.ways)
-        for set in range(self.sets):
+        print("\taddress\tlru" * WAYS)
+        for set in range(SETS):
             entries = ""
-            for way in range(self.ways):
+            for way in range(WAYS):
                 entries += f"\t{self.cache[set][way][0]}\t{self.cache[set][way][1]}"
             print(f"set {set}{entries}")
 
@@ -297,17 +284,17 @@ class RV32IMCachedProcessor:
             case "add":
                 res = rs1 + rs2
             case "mul":
-                self.stalls += self.mult_delay
+                self.stalls += MULT_DELAY
                 res = rs1 * rs2
                 res = res & mask
             case "bne":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = rs1 != rs2
                 self.j_dest = self.pc - 4 + imm
             case "slli":
                 res = rs1 << imm
             case "bgeu":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = (rs1 & mask) >= (rs2 & mask)
                 self.j_dest = self.pc - 4 + imm
             case "sw":
@@ -315,35 +302,35 @@ class RV32IMCachedProcessor:
                 self.wr_mask = 0xFFFFFFFF
                 self.write = True
             case "beq":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = rs1 == rs2
                 self.j_dest = self.pc - 4 + imm
             case "jalr":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.j_dest = rs1 + imm
                 res = self.pc
                 self.jump = True
             case "blt":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = rs1 < rs2
                 self.j_dest = self.pc - 4 + imm
             case "jal":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.j_dest = self.pc - 4 + imm
                 res = self.pc
                 self.jump = True
             case "lui":
                 res = imm << 12
             case "mulh":
-                self.stalls += self.mult_delay
+                self.stalls += MULT_DELAY
                 res = rs1 * rs2
                 res = res >> 32
             case "mulhsu":
-                self.stalls += self.mult_delay
+                self.stalls += MULT_DELAY
                 res = rs1 * (rs2 & mask)
                 res = res >> 32
             case "mulhu":
-                self.stalls += self.mult_delay
+                self.stalls += MULT_DELAY
                 res = (rs1 & mask) * (rs2 & mask)
                 res = res >> 32
             case "div":
@@ -447,11 +434,11 @@ class RV32IMCachedProcessor:
             case "auipc":
                 res = self.pc - 4 + (imm << 12)
             case "bge":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = rs1 >= rs2
                 self.j_dest = self.pc - 4 + imm
             case "bltu":
-                self.stalls += self.jump_delay
+                self.stalls += JUMP_DELAY
                 self.jump = (rs1 & mask) < (rs2 & mask)
                 self.j_dest = self.pc - 4 + imm
 
@@ -470,21 +457,21 @@ class RV32IMCachedProcessor:
         self.sign = (self.sign << offset) & 0xFFFFFFFF
 
         if self.read:
-            if self.cached:
+            if CACHED:
                 self.cache_access(address, False)
-            self.read_stalls += self.read_delay
+            self.read_stalls += READ_DELAY
             self.read_data = (mem_data & self.rd_mask) >> offset
         elif self.signed:
-            if self.cached:
+            if CACHED:
                 self.cache_access(address, False)
-            self.read_stalls += self.read_delay
+            self.read_stalls += READ_DELAY
             self.read_data = (mem_data & self.rd_mask) >> offset
             if self.read_data & self.sign:
                 self.read_data = self.read_data | self.extension
         elif self.write:
-            if self.cached:
+            if CACHED:
                 self.cache_access(address, True)
-            self.write_stalls += self.write_delay
+            self.write_stalls += WRITE_DELAY
             self.mem[address] = (
                 (mem_data & (~(self.wr_mask << offset)))
                 | ((self.rd2 & self.wr_mask) << offset)
