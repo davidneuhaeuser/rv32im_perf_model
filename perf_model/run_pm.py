@@ -2,18 +2,6 @@ import sys
 import time
 
 from perf_model.backend.utils.load_binary import advanced_parse
-from perf_model.perf_model_config import (
-    BLOCK_SIZE,
-    CACHE_ERROR_CORRECTION,
-    CACHED,
-    DMEM_OFFSET,
-    MEM_SIZE,
-    MULT_DELAY,
-    READ_DELAY,
-    SETS,
-    WAYS,
-    WRITE_DELAY,
-)
 from perf_model.perf_model_rv32im import RV32IMCachedProcessor
 from perf_model.utility import (
     generate_asm,
@@ -72,11 +60,7 @@ def run():
 
     for executable in executables:
 
-        print_header()
-
-        program: str = executable.split("/")[-1]
-
-        print_header(f"RUNNING '{program}'")
+        program_name: str = executable.split("/")[-1]
 
         mem_init, instructions, _ = advanced_parse(executable)
         proc = RV32IMCachedProcessor(
@@ -84,11 +68,10 @@ def run():
             mem_init=mem_init,
         )
 
-        if print_prog:
-            print_header("PROGRAM")
-            print_program(instructions)
-
+        print_header()
+        print_header(f"RUNNING '{program_name}'")
         print_header("STARTED SIMULATION")
+
         start = time.time()
         proc.simulate(track_exec=exec_hist)
         end = time.time()
@@ -98,8 +81,12 @@ def run():
         print_header(f"RETURN VALUE: {proc.return_value()}")
         print_header(f"SIMULATION TIME: {(end - start):.4f} seconds")
 
+        if print_prog:
+            print_header("EXECUTED PROGRAM")
+            print_program(instructions)
+
         if gen_asm:
-            generate_asm(instructions, program)
+            generate_asm(instructions, program_name)
 
         if verbose:
             print_header("RUNTIME INFO")
