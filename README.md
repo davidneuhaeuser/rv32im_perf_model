@@ -1,4 +1,4 @@
-# RV32IM (cached) Performance Model for DNNs
+# RV32IM Performance Model for DNNs
 
 This tool can be used to compile C programs and estimate their performance when running on a RISC-V (32IM) CPU with a 5-stage pipeline, hazard detection and forwarding, along with multplication support.
 
