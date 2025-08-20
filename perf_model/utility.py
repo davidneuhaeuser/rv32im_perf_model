@@ -146,6 +146,14 @@ def get_executables(dir: str) -> list[str]:
     for i in range(len(executables)):
         executables[i] = executables[i].replace("//", "/")
 
+    i = 0
+    while i in range(len(executables)):
+        executables[i] = executables[i].replace("//", "/")
+        if executables[i].find(".o") > 0 or executables[i].find(".a") > 0:
+            executables.remove(executables[i])
+            i -= 1
+        i += 1
+
     if executables == []:
         return [dir]
 
