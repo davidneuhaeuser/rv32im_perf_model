@@ -1,5 +1,5 @@
-CC=/home/daneu/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin/riscv-none-elf-gcc
-AR=/home/daneu/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin/riscv-none-elf-ar
+CC=$(xpack)/riscv-none-elf-gcc
+AR=$(xpack)/riscv-none-elf-ar
 
 BUILD_DIR=build
 SRC_DIR=src
