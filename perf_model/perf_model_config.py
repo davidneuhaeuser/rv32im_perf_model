@@ -32,4 +32,4 @@ BLOCK_SIZE = 2  # default: 2
 
 # Select an error correction factor for the
 # total number of clock cycles
-CACHE_ERROR_CORRECTION = 1.0  # default 1.05
+CACHE_ERROR_CORRECTION = 1.0  # default 1.0
