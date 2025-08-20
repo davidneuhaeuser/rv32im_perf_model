@@ -22,7 +22,7 @@ This setup will cover the following steps:
 
 
 ### Step 1
-Add necessary variables (these are only session persistant):
+Download GCC for RISC-V from the link for you system.
 
 
 ### Step 2
@@ -30,6 +30,7 @@ Install pypy by downloading a pre-compiled version as explained [here](https://d
 
 
 ### Step 3
+Add all necessary variables (these will only persist thoughout one session):
 ```
 alias run="<path/to/pypy> perf_model/run.py"
 export xpack="<path/to/xpack/bin/>"
