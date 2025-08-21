@@ -11,57 +11,43 @@ If you intend to analyze any other type of program, it is recommended to change 
 
 
 ## Setup
-It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for better simulation times.
+It is recommended to use [pypy](https://doc.pypy.org/en/latest/index.html), for quicker performance estimation.
 
 This setup will cover the following steps:
 
 1.  **Download GCC for RISC-V**
-2.  **Install pypy**
-3.  **Set variables**
-4.  **Initialise python project**
+2.  **Create python environment**
+3.  **Initialise python project**
 
 
 ### Step 1
-Download [GCC for RISC-V](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3) from the link for you system.
-
+Download [GCC for RISC-V](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3) from the link for you system and extract it.
+Change the first two lines of `perf_model/compilation/Makefile`, so they point towards the given binaries.
 
 ### Step 2
-Install *pypy* by downloading a [pre-built](https://pypy.org/download.html) version as explained [here](https://doc.pypy.org/en/latest/install.html#download-a-pre-built-pypy).
-It is recommended to rename the extracted folder to something along the lines of `pypy_perf_model`.
+Install *pypy* by downloading a [pre-built](https://pypy.org/download.html) version and extracting it as explained [here](https://doc.pypy.org/en/latest/install.html#download-a-pre-built-pypy).
+For ease of access, it is recommended to rename the extracted folder to something simple along the lines of `pypy_perf_model`.
 
 ### Step 3
-Add all necessary variables by replacing the placeholders below with the according paths (these will only persist throughout a single session):
-```
-alias run="<path/to/pypy> perf_model/run.py"
-export xpack="<path/to/xpack/bin/>"
-alias mk="cd perf_model/compilation && make && cd ../.."
-alias clean="cd perf_model/compilation && make clean && cd ../.."
-```
-
-For example:
-```
-alias run="~/Downloads/pypy_perf_model/bin/python perf_model/run.py"
-export xpack="~/Downloads/xpack-riscv-none-elf-gcc-14.2.0-3-linux-x64/xpack-riscv-none-elf-gcc-14.2.0-3/bin"
-alias mk="cd perf_model/compilation && make && cd ../.."
-alias clean="cd perf_model/compilation && make clean && cd ../.."
-```
-
-
-### Step 4
 Initialise the python project (installs package dependencies) depending on the python interpreter you are using.
 
 For *pypy* use the following commands (explained [here](https://doc.pypy.org/en/latest/install.html#installing-more-modules)):
 
 ```
- ./pypy-xxx/bin/pypy -m ensurepip
+ <path/to/pypy/folder>/pypy_perf_model/bin/pypy -m ensurepip
+ <path/to/pypy/folder>/pypy_perf_model/bin/pypy -mpip install -U pip wheel
+ <path/to/pypy/folder>/pypy_perf_model/bin/pypy -mpip install -e ".[dev]"
+```
 
- ./pypy-xxx/bin/pypy -mpip install -U pip wheel # to upgrade to the latest versions
-
- ./pypy-xxx/bin/pypy -mpip install -e ".[dev]" # install dependencies
+If you want to use *pyenv* execute the following commands from this projects root:
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
 ```
 
 ## Usage
-**1. Configure the simulation to your liking via `perf_model/perf_model_config.py`**
+**1. Configure the performance estimation to your liking via `perf_model/perf_model_config.py`**
 
 **2. Compile the desired c project**
 
@@ -72,21 +58,19 @@ int main();
 
 __asm("__start: la sp, stack; jal main; ecall");
 ```
-3. Add each executables path to `OUT` and adding a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
+3. Add each executables path to `OUT` and add a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
 ```
 $(BUILD_DIR)/EXENAME: $(SRC_DIR)/FILE.c $(LIB)
 	$(CC) $(CFLAGS) -I$(INC_DIR) $(DEFS) $(SRC_DIR)/FILE.c $(LDFLAGS) -o $@
 ```
-4. Run `mk`.
+4. `cd` to `perf_model/compilation` and run `make`
 
-5. **(Optional)** If you are done, clean up your build by using `clean`.
+5. **(Optional)** Use `make clean` when done.
 
-**3. Run the simulation**
+**3. Run the performance estimation**
 
-Use `run` with flags (see `-h` for help) and a path to either a file or a folder to execute all the executables contained within that folder.
+Run `perf_model/run.py` with your python interpreter, along with flags (see `-h` for help) and a path to either a file or a folder to execute the file or all the executables contained within that folder.
 
-> [!NOTE]
-> Please note that you can execute all commands from the top level of this repository
 
 ## Performance Error
 
