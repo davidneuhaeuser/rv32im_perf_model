@@ -2,8 +2,8 @@
 ##    REPLACE WITH PATH TO XPACK HERE    ##
 ###########################################
 
-CC=<path/to/xpack>/bin/riscv-none-elf-gcc
-AR=<path/to/xpack>/bin/riscv-none-elf-ar
+CC=$(XPACK)/bin/riscv-none-elf-gcc
+AR=$(XPACK)/bin/riscv-none-elf-ar
 
 ###########################################
 ###########################################
