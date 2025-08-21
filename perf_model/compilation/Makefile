@@ -1,10 +1,19 @@
-CC=$(xpack)/riscv-none-elf-gcc
-AR=$(xpack)/riscv-none-elf-ar
+###########################################
+##    REPLACE WITH PATH TO XPACK HERE    ##
+###########################################
+
+CC=<path/to/xpack>/bin/riscv-none-elf-gcc
+AR=<path/to/xpack>/bin/riscv-none-elf-ar
+
+###########################################
+###########################################
 
 BUILD_DIR=build
 SRC_DIR=src
 INC_DIR=include
 
+# DO NOT CHANGE THESE UNLESS YOU KNOW WHAT YOU ARE DOING
+# OPTIMIZATION SHOULD BE O2 IF MAIN ONLY EXECUTES VOID FUNCTIONS
 CFLAGS=-O2 -march=rv32im -mabi=ilp32 --static -nostdlib -I include -fno-inline
 LDFLAGS=-T linker_rv32.ld -lgcc -L$(BUILD_DIR)
 
@@ -13,14 +22,14 @@ SRCS=$(wildcard $(SRC_DIR)/*.c)
 INCS=$(wildcard $(INC_DIR)/*.h)
 OBJS=$(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 
-##########################################
-# ADD YOUR DESIRED EXECTUABLE NAMES HERE #
-##########################################
+####################################################################
+##            ADD YOUR DESIRED EXECTUABLE NAMES HERE              ##
+####################################################################
 
 OUT=$(BUILD_DIR)/sort300 $(BUILD_DIR)/sort200 $(BUILD_DIR)/sort100
 
-##########################################
-##########################################
+####################################################################
+####################################################################
 
 LIB=$(BUILD_DIR)/lib.a
 
@@ -38,9 +47,9 @@ $(LIB): $(OBJS)
 	$(AR) rcs $(LIB) $(OBJS)
 
 
-###########################################
-# REPLACE FILES BELOW WITH YOUR OWN FILES #
-###########################################
+################################################################################
+##             REPLACE (/ADD) FILES BELOW WITH YOUR OWN FILES                 ##
+################################################################################
 
 $(BUILD_DIR)/sort300: $(SRC_DIR)/sort300.c $(LIB)
 	$(CC) $(CFLAGS) -I$(INC_DIR) $(DEFS) $(SRC_DIR)/sort300.c $(LDFLAGS) -o $@
@@ -51,8 +60,8 @@ $(BUILD_DIR)/sort200: $(SRC_DIR)/sort200.c $(LIB)
 $(BUILD_DIR)/sort100: $(SRC_DIR)/sort100.c $(LIB)
 	$(CC) $(CFLAGS) -I$(INC_DIR) $(DEFS) $(SRC_DIR)/sort100.c $(LDFLAGS) -o $@
 
-###########################################
-###########################################
+################################################################################
+################################################################################
 
 clean:
 	rm -rf build
