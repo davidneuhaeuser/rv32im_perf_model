@@ -19,6 +19,7 @@ This setup will cover the following steps:
 2.  **Create python environment**
 3.  **Initialise python project**
 4.  **Configure setup file**
+5.	**Setup your C project**
 
 ### Step 1
 Download [GCC for RISC-V](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3) from the link for you system and extract it.
@@ -87,6 +88,7 @@ run --asm perf_model/compilation/example  # will run 'example` and generate an a
 runall  # will run all executables from the last compilation
 ```
 
+In case of errors during setup, it might help to start a fresh terminal session.
 
 ## Performance Error
 
