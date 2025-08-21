@@ -92,7 +92,7 @@ In case of errors during setup, it might help to start a fresh terminal session.
 
 ## Performance Error
 
-The table below shows the measured performance estimation error as compared to an HDL implementation of an RV32IM processor with the same specifications (5-stage pipeline, hazard detection, forwarding, 2-way/2-set/2-words-per-block/write-back/write-allocate cache) for programs of respective categories. Considering the results, it is therefore recommended to **assume an error of ±15%.**
+The table below shows the measured performance estimation error as compared to an HDL implementation of an RV32IM processor with the same specifications (5-stage pipeline, hazard detection, forwarding, 4-way/4-set/2-words-per-block/write-back/write-allocate cache) for programs of respective categories. Considering the results, it is therefore recommended to **assume an error of ±15%.**
 
 | Cached   | DNNs          | DNN related   | Sorting Algorithms |
 | -------- | ------------- | ------------- | ------------------ |
