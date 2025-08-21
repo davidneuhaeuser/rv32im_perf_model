@@ -9,16 +9,12 @@ from perf_model.instructions import (
     rv32im_R_instructions,
 )
 from perf_model.perf_model_config import (
-    BLOCK_SIZE,
-    CACHE_ERROR_CORRECTION,
     CACHED,
     DMEM_OFFSET,
     JUMP_DELAY,
     MEM_SIZE,
     MULT_DELAY,
     READ_DELAY,
-    SETS,
-    WAYS,
     WRITE_DELAY,
 )
 from perf_model.utility import btd_conversion
@@ -30,6 +26,10 @@ DATA = 1
 IOFFS = 2
 BASE = 3
 IMM = 3
+
+WAYS = 4  # default: 4
+SETS = 4  # default: 4
+BLOCK_SIZE = 2  # default: 2
 
 
 class RV32IMCachedProcessor:
@@ -148,7 +148,7 @@ class RV32IMCachedProcessor:
                     )
 
                 self.stalls += self.read_stalls + self.write_stalls
-                self.ccs = int(CACHE_ERROR_CORRECTION * (self.ccs + self.stalls))
+                self.ccs = int(self.ccs + self.stalls)
                 return
             else:
                 self.tick()

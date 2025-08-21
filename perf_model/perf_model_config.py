@@ -20,20 +20,8 @@ JUMP_DELAY = 3
 #################################################
 #                 CACHE CONFIG                  #
 #################################################
-# Configuration of a set associative cache
-# using least recently used (CACHED = False
-# will ignore any effects of the cache)
-
+# CACHED = False will ignore caching
 CACHED = True  # default: True
-WAYS = 4  # default: 4
-SETS = 4  # default: 4
-
-# Select the number of words per cache block
-BLOCK_SIZE = 2  # default: 2
-
-# Select an error correction factor for the
-# total number of clock cycles
-CACHE_ERROR_CORRECTION = 1.0  # default 1.0
 
 
 #################################################
