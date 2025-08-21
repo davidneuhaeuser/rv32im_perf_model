@@ -66,14 +66,20 @@ For *pypy* use the following commands (explained [here](https://doc.pypy.org/en/
 **2. Compile the desired c project**
 
 1. Paste your project according to the given structure into `perf_model/compilation`
-2. Add each executables path to `OUT` and adding a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
+2. Add the following lines at the top of your `main` or equivalent (replace names accordingly), right below any includes:
+```
+int main();
+
+__asm("__start: la sp, stack; jal main; ecall");
+```
+3. Add each executables path to `OUT` and adding a rule for each file by replacing `EXENAME` with the desired name of the executable and `FILE` with the name of the C source file:
 ```
 $(BUILD_DIR)/EXENAME: $(SRC_DIR)/FILE.c $(LIB)
 	$(CC) $(CFLAGS) -I$(INC_DIR) $(DEFS) $(SRC_DIR)/FILE.c $(LDFLAGS) -o $@
 ```
-3. Run `mk`.
+4. Run `mk`.
 
-4. **(Optional)** If you are done, clean up your build by using `clean`.
+5. **(Optional)** If you are done, clean up your build by using `clean`.
 
 **3. Run the simulation**
 
