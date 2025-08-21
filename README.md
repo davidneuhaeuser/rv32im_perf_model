@@ -70,6 +70,9 @@ $(BUILD_DIR)/EXENAME: $(SRC_DIR)/FILE.c $(LIB)
 **3. Run the performance estimation**
 
 Run `perf_model/run.py` with your python interpreter, along with flags (see `-h` for help) and a path to either a file or a folder to execute the file or all the executables contained within that folder.
+```
+<path/to/pypy>/bin/python perf_model/run.py --asm perf_model/compilation/build  # will run all executables in the build folder that result from the compilation and generate an asm file of the program
+```
 
 
 ## Performance Error
