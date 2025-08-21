@@ -1,0 +1,13 @@
+#! /bin/bash
+# xpack="path/to/xpack/"
+# pypath="path/to/pypy/"
+export XPACK="~/Downloads/xpack/"
+alias pypath="~/code/python/pypy3.11/bin/python"
+
+alias run="pypath perf_model/run.py"
+alias runall="run perf_model/compilation/build"
+
+cd perf_model/compilation/
+make clean
+make
+cd ../..
