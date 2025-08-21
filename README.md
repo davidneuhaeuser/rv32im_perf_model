@@ -99,3 +99,7 @@ Use `run` with flags (see `-h` for help) and a path to either a file or a folder
 ## More
 
 The `backend` folder contains files from a different project, which are necessary for parsing the generated binaries.
+
+## Licences
+
+Licences for third party dependencies are listed in the respective folder: `backend/LICENCE`.
