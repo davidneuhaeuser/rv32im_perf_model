@@ -88,18 +88,16 @@ Use `run` with flags (see `-h` for help) and a path to either a file or a folder
 > [!NOTE]
 > Please note that you can execute all commands from the top level of this repository
 
-## Results
+## Results & Error
 
 | Cached   | DNNs          | DNN related   | Sorting Algorithms |
 | -------- | ------------- | ------------- | ------------------ |
-| Yes      | <2%           | <6%           | <15%               |
-| No       | 0%*           | 0%*           |  0%*               |
+| Yes      | <2%           | <6%           | <12%               |
+| No       | 0%<sup>1</sup>| 0%<sup>1</sup>|  0%<sup>1</sup>    |
 
-> [!WARNING]
-> Add 15% to any simulation result to cover worst case scenarios.
+It is therefore recommended to **assume an error of ±15%.**
 
-> [!NOTE]
-> *: As compared to an [Amaranth](https://github.com/amaranth-lang/amaranth) implementation
+<sup>1</sup> As compared to an HDL implementation of an RV32IM processor with the same specifications (without a cache).
 
 
 ## More
