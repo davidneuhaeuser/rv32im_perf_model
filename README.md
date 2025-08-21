@@ -88,7 +88,7 @@ Use `run` with flags (see `-h` for help) and a path to either a file or a folder
 > [!NOTE]
 > Please note that you can execute all commands from the top level of this repository
 
-## Results & Error
+## Performance Error
 
 | Cached   | DNNs          | DNN related   | Sorting Algorithms |
 | -------- | ------------- | ------------- | ------------------ |
