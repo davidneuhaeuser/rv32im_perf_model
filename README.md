@@ -90,14 +90,12 @@ Use `run` with flags (see `-h` for help) and a path to either a file or a folder
 
 ## Performance Error
 
+The table below shows the measured error in clock cycles as compared to an HDL implementation of an RV32IM processor with the same specifications (without a cache) for programs of respective categories. Regarding the results, it is therefore recommended to **assume an error of ±15%.**
+
 | Cached   | DNNs          | DNN related   | Sorting Algorithms |
 | -------- | ------------- | ------------- | ------------------ |
 | Yes      | <2%           | <6%           | <12%               |
-| No       | 0%<sup>1</sup>| 0%<sup>1</sup>|  0%<sup>1</sup>    |
-
-It is therefore recommended to **assume an error of ±15%.**
-
-<sup>1</sup> As compared to an HDL implementation of an RV32IM processor with the same specifications (without a cache).
+| No       | 0%            | 0%            |  0%                |
 
 
 ## More
