@@ -47,7 +47,7 @@ pip install -e ".[dev]"
 ```
 
 ### Step 4
-Configure the `setup` script file (if you are using *venv* you can simply skip the second step):
+Configure the paths (if you are using *venv* you can simply skip the second step):
 
 1.	Write the path to your xpack download to `xpackpath`
 2.	Write the path to your desired python interpreter to `pypath`
