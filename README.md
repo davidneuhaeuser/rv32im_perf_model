@@ -53,6 +53,8 @@ Configure the paths (if you are using *venv* you can simply skip the second step
 2.	Write the path to your desired python interpreter to `pypath`
 
 ### Setp 5
+There is already a collection of simple C programs contained in `perf_model/compilation/src`. To try them out, you can simply skip this step.
+
 Prepare your C project for compilation:
 1.	Copy your project into `perf_model/compilation` according to its given structure.
 2.	Add the following lines at the top of your `main` or equivalent (replace names accordingly), right below any includes:
